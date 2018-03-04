@@ -1,0 +1,14 @@
+services:
+    _defaults:
+        public: false
+        autowire: false
+        autoconfigure: false
+
+    JulienDufresne\RequestIdBundle\EventListener\ResponseListener:
+        arguments:
+            - '@JulienDufresne\RequestIdBundle\Service\RequestIdService'
+            - 'X-Current-Request-Id'
+            - 'X-Parent-Request-Id'
+            - 'X-Root-Request-Id'
+        tags:
+            - { name: kernel.event_listener, event: kernel.response }

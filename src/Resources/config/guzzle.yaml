@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        public: false
+        autowire: false
+        autoconfigure: false
+
+    JulienDufresne\RequestId\Guzzle\ClientFactory:
+        arguments:
+            - '@JulienDufresne\RequestId\Guzzle\RequestIdMiddleware'
+
+    JulienDufresne\RequestId\Guzzle\RequestIdMiddleware:
+        arguments:
+            - '@JulienDufresne\RequestIdBundle\Service\RequestIdService'
+            - 'X-Root-Request-Id' # Override by configuration
+            - 'X-Parent-Request-Id' # Override by configuration

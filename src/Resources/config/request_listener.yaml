@@ -1,0 +1,18 @@
+services:
+    _defaults:
+        public: false
+        autowire: false
+        autoconfigure: false
+
+    JulienDufresne\RequestId\Factory\RequestIdFromRequestFactory:
+        arguments:
+            - '@julien_dufresne_request_id.generator'
+            - 'X-Root-Request-Id' # Override by configuration
+            - 'X-Parent-Request-Id' # Override by configuration
+
+    JulienDufresne\RequestIdBundle\EventListener\RequestListener:
+        arguments:
+            - '@JulienDufresne\RequestIdBundle\Service\RequestIdService'
+            - '@JulienDufresne\RequestId\Factory\RequestIdFromRequestFactory'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 255 }

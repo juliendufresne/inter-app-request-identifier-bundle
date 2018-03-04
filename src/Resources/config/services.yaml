@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        public: false
+        autowire: false
+        autoconfigure: false
+
+    julien_dufresne_request_id.generator:
+        alias: JulienDufresne\RequestId\Factory\Generator\RamseyUuidGenerator
+
+    JulienDufresne\RequestId\Factory\Generator\RamseyUuidGenerator: ~
+
+    JulienDufresne\RequestIdBundle\Service\RequestIdService: ~
