@@ -1,0 +1,16 @@
+services:
+    _defaults:
+        public: false
+        autowire: false
+        autoconfigure: false
+
+    JulienDufresne\RequestId\Factory\RequestIdFromConsoleFactory:
+        arguments:
+            - '@julien_dufresne_request_id.generator'
+
+    JulienDufresne\RequestIdBundle\EventListener\ConsoleListener:
+        arguments:
+            - '@JulienDufresne\RequestIdBundle\Service\RequestIdService'
+            - '@JulienDufresne\RequestId\Factory\RequestIdFromConsoleFactory'
+        tags:
+            - { name: kernel.event_listener, event: console.command }

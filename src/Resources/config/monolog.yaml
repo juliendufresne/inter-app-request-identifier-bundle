@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        public: false
+        autowire: false
+        autoconfigure: false
+
+    JulienDufresne\RequestId\Monolog\RequestIdProcessor:
+        arguments:
+            - '@JulienDufresne\RequestIdBundle\Service\RequestIdService'
+            - 'request_id'
+            - 'current'
+            - 'root'
+            - 'parent'
+        tags:
+            - { name: monolog.processor }

@@ -4,26 +4,33 @@
     "type": "symfony-bundle",
     "require": {
         "php": "^7.1.3",
-        "juliendufresne/inter-app-request-identifier": "^0.1.0"
+        "juliendufresne/inter-app-request-identifier": "^0.2.0",
+        "symfony/config": "^3.3|^4.0",
+        "symfony/dependency-injection": "^3.3|^4.0",
+        "symfony/event-dispatcher": "^3.3|^4.0",
+        "symfony/http-kernel": "^3.3|^4.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.10",
+        "guzzlehttp/guzzle": "^6.3",
         "jakub-onderka/php-console-highlighter": "^0.3.2",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "phpmetrics/phpmetrics": "^2.3",
         "phpstan/phpstan": "^0.9.2",
         "phpstan/phpstan-phpunit": "^0.9.4",
         "phpunit/phpunit": "^7.0",
-        "sensiolabs/security-checker": "^4.1"
+        "sensiolabs/security-checker": "^4.1",
+        "symfony/console": "^4.0",
+        "symfony/monolog-bundle": "^3.1"
     },
     "autoload": {
         "psr-4": {
-            "JulienDufresne\\InterAppRequestIdentifierBundle\\": "src/"
+            "JulienDufresne\\RequestIdBundle\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "JulienDufresne\\InterAppRequestIdentifier\\TestsBundle\\": "tests/"
+            "JulienDufresne\\RequestIdBundle\\Tests\\": "tests/"
         }
     },
     "license": "MIT",
