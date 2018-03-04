@@ -11,6 +11,7 @@ use JulienDufresne\RequestId\Monolog\RequestIdProcessor;
 use JulienDufresne\RequestIdBundle\EventListener\ResponseListener;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -38,35 +39,33 @@ final class JulienDufresneRequestIdExtension extends Extension
             $container->setAlias('julien_dufresne_request_id.generator', $config['generator']);
         }
 
-        if ($config['console_listener']['enabled']) {
-            $this->configureConsoleListener($container);
+        if ($config['console_listener']['enabled'] && class_exists(ConsoleEvents::class)) {
+            $loader->load('console_listener.yaml');
         }
+
         if ($config['request_listener']['enabled']) {
+            $loader->load('request_listener.yaml');
             $this->configureRequestListener($container, $config['request_listener']);
         }
+
         if ($config['response_listener']['enabled']) {
+            $loader->load('response_listener.yaml');
             $this->configureResponseListener($container, $config['response_listener']);
         }
-        if ($config['guzzle']['enabled']) {
+
+        if ($config['guzzle']['enabled'] && class_exists(GuzzleClient::class)) {
+            $loader->load('guzzle.yaml');
             $this->configureGuzzle($container, $config['guzzle']);
         }
 
-        if ($config['monolog']['enabled']) {
+        if ($config['monolog']['enabled'] && class_exists(MonologBundle::class)) {
+            $loader->load('monolog.yaml');
             $this->configureMonolog($container, $config['monolog']);
         }
     }
 
-    private function configureConsoleListener(ContainerBuilder $container): void
-    {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('console_listener.yaml');
-    }
-
     private function configureRequestListener(ContainerBuilder $container, array $requestListenerConfig): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('request_listener.yaml');
-
         $container->getDefinition(RequestIdFromRequestFactory::class)
                   ->replaceArgument(1, $requestListenerConfig['headers']['root'])
                   ->replaceArgument(2, $requestListenerConfig['headers']['parent']);
@@ -74,9 +73,6 @@ final class JulienDufresneRequestIdExtension extends Extension
 
     private function configureResponseListener(ContainerBuilder $container, array $responseListenerConfig): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('response_listener.yaml');
-
         $container->getDefinition(ResponseListener::class)
                   ->replaceArgument(1, $responseListenerConfig['headers']['current'])
                   ->replaceArgument(2, $responseListenerConfig['headers']['parent'])
@@ -85,15 +81,6 @@ final class JulienDufresneRequestIdExtension extends Extension
 
     private function configureGuzzle(ContainerBuilder $container, array $guzzleConfig): void
     {
-        if (!class_exists(GuzzleClient::class)) {
-            throw new \LogicException(
-                'You need the guzzlehttp/guzzle package to enable the julien_dufresne_request_id.guzzle configuration'
-            );
-        }
-
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('guzzle.yaml');
-
         $container->getDefinition(RequestIdMiddleware::class)
                   ->replaceArgument(1, $guzzleConfig['request_headers']['parent'])
                   ->replaceArgument(2, $guzzleConfig['request_headers']['root']);
@@ -101,15 +88,6 @@ final class JulienDufresneRequestIdExtension extends Extension
 
     private function configureMonolog(ContainerBuilder $container, array $monologConfig): void
     {
-        if (!class_exists(MonologBundle::class)) {
-            throw new \LogicException(
-                'You need the guzzlehttp/guzzle package to enable the julien_dufresne_request_id.guzzle configuration'
-            );
-        }
-
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('monolog.yaml');
-
         $container->getDefinition(RequestIdProcessor::class)
                   ->replaceArgument(1, $monologConfig['extra_entry_name'])
                   ->replaceArgument(2, $monologConfig['current'])
