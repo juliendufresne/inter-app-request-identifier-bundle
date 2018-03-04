@@ -112,7 +112,7 @@ final class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
-            ->canBeEnabled()
+            ->canBeDisabled()
             ->children()
                 ->arrayNode('request_headers')
                     ->addDefaultsIfNotSet()
@@ -138,7 +138,7 @@ final class Configuration implements ConfigurationInterface
 
         $node
             ->addDefaultsIfNotSet()
-            ->canBeEnabled()
+            ->canBeDisabled()
             ->children()
                 ->scalarNode('extra_entry_name')
                     ->defaultValue('request_id')
